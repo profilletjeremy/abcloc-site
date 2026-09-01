@@ -1,7 +1,9 @@
 // Réception d'une photo depuis le back-office.
 // L'image est redimensionnée côté navigateur avant l'envoi, puis transmise en
-// base64 dans du JSON : pas de multipart à décoder, et une charge utile légère.
-const { exigeAuth, blobActif } = require('./_lib.js');
+// base64 dans du JSON, puis commitée dans le dépôt GitHub (assets/uploads/…)
+// et servie ensuite via raw.githubusercontent.com — public, sans jeton, comme
+// l'exigent les balises <img> du site.
+const { exigeAuth, stockageActif, ghPut, GH_OWNER, GH_REPO, GH_BRANCH } = require('./_lib.js');
 
 const TYPES = { 'image/jpeg': 'jpg', 'image/png': 'png', 'image/webp': 'webp' };
 const MAX_OCTETS = 3 * 1024 * 1024;
@@ -10,9 +12,9 @@ module.exports = async (req, res) => {
   if (req.method !== 'POST') return res.status(405).json({ erreur: 'Méthode non autorisée' });
   if (!exigeAuth(req, res)) return;
 
-  if (!blobActif()) {
+  if (!stockageActif()) {
     return res.status(503).json({
-      erreur: "Stockage non configuré : créez un Blob Store sur Vercel pour pouvoir envoyer des photos.",
+      erreur: "Stockage non configuré : la variable GITHUB_TOKEN est absente sur ce déploiement.",
     });
   }
 
@@ -32,17 +34,16 @@ module.exports = async (req, res) => {
   }
 
   const base = String(nom || 'photo').toLowerCase().replace(/\.[a-z0-9]+$/, '').replace(/[^a-z0-9-]/g, '-').slice(0, 50) || 'photo';
+  const nomFichier = `${Date.now()}-${base}.${ext}`;
+  const chemin = `assets/uploads/${nomFichier}`;
 
   try {
-    const { put } = require('@vercel/blob');
-    const blob = await put(`photos/${base}.${ext}`, buffer, {
-      access: 'public',
-      contentType: type,
-      addRandomSuffix: true, // évite d'écraser une photo existante et casse le cache
-    });
-    res.json({ ok: true, url: blob.url });
+    await ghPut(chemin, buffer, `chore(back-office): ajout de la photo ${nomFichier}`);
+    const url = `https://raw.githubusercontent.com/${GH_OWNER}/${GH_REPO}/${GH_BRANCH}/${chemin}`;
+    res.json({ ok: true, url });
   } catch (err) {
-    console.error('envoi Blob impossible :', err.message);
-    res.status(500).json({ erreur: "L'envoi a échoué : " + err.message });
+    console.error('envoi GitHub impossible :', err.message);
+    const code = err.code === 'NO_STORAGE' ? 503 : 500;
+    res.status(code).json({ erreur: "L'envoi a échoué : " + err.message });
   }
 };

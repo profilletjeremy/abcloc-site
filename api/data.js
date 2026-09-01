@@ -1,5 +1,5 @@
 // Lecture / écriture des données du site depuis le back-office.
-const { lireDonnees, ecrireDonnees, exigeAuth, blobActif } = require('./_lib.js');
+const { lireDonnees, ecrireDonnees, exigeAuth, stockageActif } = require('./_lib.js');
 
 const CATS = ['citadine', 'suv', 'familiale', 'auto'];
 
@@ -53,7 +53,7 @@ module.exports = async (req, res) => {
   if (req.method === 'GET') {
     if (!exigeAuth(req, res)) return;
     const data = await lireDonnees({ frais: true });
-    return res.json({ data, stockage: blobActif() ? 'blob' : 'aucun' });
+    return res.json({ data, stockage: stockageActif() ? 'github' : 'aucun' });
   }
 
   if (req.method !== 'PUT') return res.status(405).json({ erreur: 'Méthode non autorisée' });
