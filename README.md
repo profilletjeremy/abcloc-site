@@ -85,23 +85,39 @@ données dans les gabarits de `api/_templates/`. Le HTML reste complet côté se
 référencement et le fonctionnement sans JavaScript sont préservés. `faq.html` et `contact.html`
 restent des fichiers statiques.
 
-Les données vivent dans **Vercel Blob**. Si le stockage n'est pas joignable, le site repart
-automatiquement sur les valeurs embarquées dans `api/_data.js` : **une panne de stockage ne peut
-pas mettre le site à terre**, elle le fige simplement sur la dernière version connue.
+Les données vivent dans un **dépôt GitHub public**, `github.com/profilletjeremy/abcloc-site`
+(fichier `data/site-data.json`, photos dans `assets/uploads/`), lu et écrit via l'API GitHub
+depuis `api/_lib.js`. Si le dépôt n'est pas joignable, le site repart automatiquement sur les
+valeurs embarquées dans `api/_data.js` : **une panne de stockage ne peut pas mettre le site à
+terre**, elle le fige simplement sur la dernière version connue.
 
-### État actuel : activé
+**Pourquoi GitHub plutôt que Vercel Blob :** Blob exige un moyen de paiement enregistré sur le
+compte dès qu'un quota mutualisé (partagé entre tous les projets du compte) est dépassé — même à
+0 € facturé. GitHub est gratuit sans carte, sans limite de temps, quel que soit le nombre d'autres
+projets sur le compte. Le dépôt est volontairement **public** : les photos sont référencées en
+`<img src="https://raw.githubusercontent.com/...">` dans le HTML envoyé au navigateur, qui ne
+peut pas fournir de jeton d'authentification — un dépôt privé casserait l'affichage des photos.
+Rien de sensible n'y est stocké (prix, textes, photos publiques du site).
 
-Le store Blob `abcloc-data-4` est créé et relié au projet, `ADMIN_PASSWORD` est posé en
-production. `/admin` fonctionne pour de vrai — testé de bout en bout (connexion, lecture,
-écriture, relecture publique) avant d'annoncer que c'était prêt.
+### État actuel
 
-Pour changer le mot de passe :
+Le dépôt est créé, public, et contient les vraies données (10 véhicules, 4 logements, 6
+témoignages). Le code de lecture/écriture est testé de bout en bout en local — lecture publique
+sans jeton, écriture et relecture avec jeton, upload de photo. Il reste deux actions
+**dashboard uniquement** avant que ce soit actif en production (voir le message que je vous ai
+envoyé) :
 
-```bash
-vercel env rm ADMIN_PASSWORD production
-vercel env add ADMIN_PASSWORD production   # colle la nouvelle valeur au prompt
-vercel deploy --prod
-```
+1. Connecter le projet Vercel à ce dépôt GitHub (Settings → Git → Connect Git Repository)
+2. Ajouter la variable d'environnement `GITHUB_TOKEN` (un jeton fin, créé sur
+   `github.com/settings/personal-access-tokens/new`, limité au dépôt `abcloc-site` avec la
+   permission **Contents: Read and write**)
+
+Une fois ces deux étapes faites, chaque `git push` sur `main` redéploie automatiquement le site —
+plus besoin d'accès à un compte Vercel particulier pour la suite des évolutions.
+
+Pour changer le mot de passe du back-office (`ADMIN_PASSWORD`), même mécanique qu'avant, mais
+désormais dans les réglages du projet transféré (dashboard, pas CLI — le projet vit sur le compte
+du client).
 
 ### Cache CDN des pages publiques
 

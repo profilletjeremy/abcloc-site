@@ -176,10 +176,10 @@
     $('#deconnexion').classList.remove('cache');
     $('#voirSite').classList.remove('cache');
 
-    if (res.stockage !== 'blob') {
+    if (res.stockage !== 'github') {
       msg($('#alerteStockage'),
         "<strong>Stockage non configuré.</strong> Vous pouvez consulter les valeurs, mais l'enregistrement "
-        + "échouera tant qu'un Blob Store n'aura pas été créé sur Vercel.", 'info');
+        + "échouera tant que la variable GITHUB_TOKEN n'aura pas été ajoutée sur Vercel.", 'info');
     }
     remplir();
   }
