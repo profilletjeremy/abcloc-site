@@ -1,0 +1,39 @@
+{
+  "$schema": "https://openapi.vercel.sh/vercel.json",
+  "functions": {
+    "api/render.js": {
+      "includeFiles": "api/_templates/**"
+    }
+  },
+  "rewrites": [
+    { "source": "/", "destination": "/api/render?page=index" },
+    { "source": "/index.html", "destination": "/api/render?page=index" },
+    { "source": "/vehicules.html", "destination": "/api/render?page=vehicules" },
+    { "source": "/logements.html", "destination": "/api/render?page=logements" },
+    { "source": "/vehicules", "destination": "/api/render?page=vehicules" },
+    { "source": "/logements", "destination": "/api/render?page=logements" },
+    { "source": "/admin", "destination": "/admin.html" }
+  ],
+  "headers": [
+    {
+      "source": "/assets/(.*)",
+      "headers": [
+        { "key": "Cache-Control", "value": "public, max-age=86400, stale-while-revalidate=604800" }
+      ]
+    },
+    {
+      "source": "/admin.html",
+      "headers": [
+        { "key": "X-Robots-Tag", "value": "noindex, nofollow" },
+        { "key": "Cache-Control", "value": "no-store" },
+        { "key": "Referrer-Policy", "value": "same-origin" }
+      ]
+    },
+    {
+      "source": "/api/(login|data|upload)",
+      "headers": [
+        { "key": "Cache-Control", "value": "no-store" }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,9 @@
+{
+  "name": "abcloc",
+  "version": "1.0.0",
+  "private": true,
+  "description": "Site vitrine ABC LOC + back-office",
+  "dependencies": {
+    "@vercel/blob": "^2.8.0"
+  }
+}

@@ -1,0 +1,432 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="robots" content="noindex, nofollow">
+<title>Back-office — ABC LOC</title>
+<link rel="icon" href="assets/brand/logo.webp">
+<style>
+  :root{--sun:#F8C810;--sun-deep:#8A6100;--ink:#12312F;--soft:#4A605E;--mute:#7C8F8D;
+        --sand:#FBF7F0;--line:#E4DBCB;--lagoon:#0E6B63;--rouge:#B3261E;--vert:#1E7A4B}
+  *,*::before,*::after{box-sizing:border-box}
+  body{margin:0;background:var(--sand);color:var(--ink);font:16px/1.55 -apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,sans-serif}
+  .wrap{max-width:1000px;margin:0 auto;padding:1.5rem}
+  header{background:var(--ink);color:var(--sand);border-bottom:5px solid var(--sun);position:sticky;top:0;z-index:10}
+  header .wrap{display:flex;align-items:center;gap:1rem;padding-block:1rem}
+  header img{width:38px}
+  header b{font-size:1.1rem;letter-spacing:-.01em}
+  header span{color:rgba(251,247,240,.6);font-size:.85rem}
+  .spacer{margin-left:auto}
+  h2{font-size:1.15rem;margin:2.5rem 0 .25rem}
+  h2:first-of-type{margin-top:1rem}
+  .aide{color:var(--mute);font-size:.9rem;margin:0 0 1rem}
+  .carte{background:#fff;border:1px solid var(--line);border-radius:12px;padding:1.1rem;margin-bottom:.9rem}
+  .carte[data-masque="oui"]{opacity:.55}
+  .grille{display:grid;grid-template-columns:110px 1fr;gap:1rem;align-items:start}
+  .champs{display:grid;grid-template-columns:repeat(auto-fit,minmax(180px,1fr));gap:.7rem}
+  label{display:block;font-size:.78rem;font-weight:600;letter-spacing:.03em;text-transform:uppercase;color:var(--mute);margin-bottom:.25rem}
+  input[type=text],textarea,select{width:100%;padding:.5rem .65rem;border:1.5px solid var(--line);border-radius:8px;
+        font:inherit;font-size:.92rem;background:#fff;color:var(--ink)}
+  textarea{min-height:80px;resize:vertical;line-height:1.5}
+  input:focus,textarea:focus,select:focus{outline:3px solid var(--sun);outline-offset:1px;border-color:transparent}
+  .vignette{width:110px;aspect-ratio:1;object-fit:cover;border-radius:8px;border:1px solid var(--line);background:#f2ece1;display:block}
+  .btn{display:inline-flex;align-items:center;gap:.4rem;padding:.55rem 1rem;border:0;border-radius:999px;
+       background:var(--sun);color:var(--ink);font:inherit;font-size:.9rem;font-weight:600;cursor:pointer}
+  .btn:hover{background:#D9AC00}
+  .btn--fin{background:transparent;border:1.5px solid var(--line);color:var(--soft);font-weight:500}
+  .btn--fin:hover{background:#fff;border-color:var(--lagoon);color:var(--lagoon)}
+  .btn--sombre{background:var(--ink);color:var(--sand)}
+  .btn--sombre:hover{background:#0b201f}
+  .cases{display:flex;flex-wrap:wrap;gap:.9rem;align-items:center;margin-top:.7rem;font-size:.88rem;color:var(--soft)}
+  .cases label{display:inline-flex;align-items:center;gap:.35rem;text-transform:none;font-size:.88rem;letter-spacing:0;color:var(--soft);margin:0;font-weight:500}
+  .barre{position:sticky;bottom:0;background:rgba(251,247,240,.95);backdrop-filter:blur(10px);
+         border-top:1px solid var(--line);padding:.9rem 0;margin-top:2rem}
+  .barre .wrap{display:flex;align-items:center;gap:1rem;padding-block:0}
+  .msg{padding:.7rem 1rem;border-radius:8px;font-size:.9rem;margin:1rem 0}
+  .msg--err{background:#FDECEA;color:var(--rouge);border:1px solid #F5C6C2}
+  .msg--ok{background:#E7F4EC;color:var(--vert);border:1px solid #BFE3CE}
+  .msg--info{background:#FDF4D6;color:var(--sun-deep);border:1px solid #F0DFA8}
+  #connexion{max-width:380px;margin:4rem auto}
+  #connexion .carte{padding:1.6rem}
+  .cache{display:none}
+</style>
+</head>
+<body>
+
+<header>
+  <div class="wrap">
+    <img src="assets/brand/logo.webp" alt="">
+    <div><b>Back-office</b><br><span>ABC LOC</span></div>
+    <div class="spacer"></div>
+    <a class="btn btn--fin cache" id="voirSite" href="/" target="_blank" rel="noopener">Voir le site</a>
+    <button class="btn btn--fin cache" id="deconnexion" type="button">Se déconnecter</button>
+  </div>
+</header>
+
+<!-- ============================================ CONNEXION -->
+<section id="connexion">
+  <div class="carte">
+    <h2 style="margin-top:0">Connexion</h2>
+    <p class="aide">Saisissez le mot de passe qui vous a été communiqué.</p>
+    <form id="formConnexion">
+      <label for="mdp">Mot de passe</label>
+      <input type="password" id="mdp" autocomplete="current-password" required
+             style="width:100%;padding:.5rem .65rem;border:1.5px solid var(--line);border-radius:8px;font:inherit">
+      <div id="msgConnexion"></div>
+      <button class="btn" type="submit" style="margin-top:1rem;width:100%;justify-content:center">Entrer</button>
+    </form>
+  </div>
+</section>
+
+<!-- ============================================ ÉDITION -->
+<main id="editeur" class="cache">
+  <div class="wrap">
+    <div id="alerteStockage"></div>
+
+    <h2>Avis Google</h2>
+    <p class="aide">La note et le nombre d'avis affichés sur la page d'accueil.</p>
+    <div class="carte">
+      <div class="champs">
+        <div><label for="avisNote">Note sur 5</label><input type="text" id="avisNote" placeholder="4,9"></div>
+        <div><label for="avisNombre">Nombre d'avis</label><input type="text" id="avisNombre" placeholder="27"></div>
+        <div style="grid-column:1/-1"><label for="avisLien">Lien vers la fiche Google</label><input type="text" id="avisLien" placeholder="https://..."></div>
+      </div>
+      <div class="cases">
+        <label><input type="checkbox" id="avisVerif"> Ces valeurs sont provisoires (affiche un avertissement sur le site)</label>
+      </div>
+    </div>
+
+    <h2>Témoignages</h2>
+    <p class="aide">Des extraits courts de vos avis Google, affichés sous la note sur la page d'accueil. Le nom est celui affiché publiquement par l'auteur sur Google.</p>
+    <div id="listeTemoignages"></div>
+    <button class="btn btn--fin" type="button" id="ajouterTemoignage">+ Ajouter un témoignage</button>
+
+    <h2>Prix d'appel</h2>
+    <p class="aide">Le « à partir de … € / jour » affiché en haut de la page d'accueil.</p>
+    <div class="carte">
+      <div class="champs" style="max-width:220px">
+        <div><label for="prixDepart">Prix de départ (€)</label><input type="text" id="prixDepart" placeholder="18"></div>
+      </div>
+    </div>
+
+    <h2>Véhicules</h2>
+    <p class="aide">Laissez le prix vide pour afficher « Sur demande ». « En vedette » = visible aussi sur la page d'accueil.</p>
+    <div id="listeVehicules"></div>
+    <button class="btn btn--fin" type="button" id="ajouterVehicule">+ Ajouter un véhicule</button>
+
+    <h2>Logements</h2>
+    <p class="aide">Un paragraphe par ligne vide. Les balises &lt;strong&gt; sont autorisées pour mettre en gras.</p>
+    <div id="listeLogements"></div>
+    <button class="btn btn--fin" type="button" id="ajouterLogement">+ Ajouter un logement</button>
+
+    <div id="msgEnregistrement"></div>
+  </div>
+
+  <div class="barre">
+    <div class="wrap">
+      <button class="btn btn--sombre" type="button" id="enregistrer">Enregistrer et publier</button>
+      <span id="etat" style="font-size:.88rem;color:var(--mute)"></span>
+    </div>
+  </div>
+</main>
+
+<script>
+(function () {
+  'use strict';
+  var $ = function (s) { return document.querySelector(s); };
+  var donnees = null;
+
+  function msg(cible, texte, type) {
+    cible.innerHTML = texte ? '<div class="msg msg--' + type + '">' + texte + '</div>' : '';
+  }
+  function esc(v) {
+    return String(v == null ? '' : v).replace(/&/g, '&amp;').replace(/</g, '&lt;')
+      .replace(/>/g, '&gt;').replace(/"/g, '&quot;');
+  }
+  async function api(url, options) {
+    var r = await fetch(url, Object.assign({ headers: { 'Content-Type': 'application/json' } }, options));
+    var j = {};
+    try { j = await r.json(); } catch (e) {}
+    if (!r.ok) throw new Error(j.erreur || ('Erreur ' + r.status));
+    return j;
+  }
+
+  /* ---------------------------------------------------------- connexion */
+  $('#formConnexion').addEventListener('submit', async function (e) {
+    e.preventDefault();
+    msg($('#msgConnexion'), '', 'info');
+    try {
+      await api('/api/login', { method: 'POST', body: JSON.stringify({ motdepasse: $('#mdp').value }) });
+      demarrer();
+    } catch (err) { msg($('#msgConnexion'), esc(err.message), 'err'); }
+  });
+
+  $('#deconnexion').addEventListener('click', async function () {
+    await fetch('/api/login', { method: 'DELETE' });
+    location.reload();
+  });
+
+  /* ---------------------------------------------------------- chargement */
+  async function demarrer() {
+    var res = await api('/api/data');
+    donnees = res.data;
+    $('#connexion').classList.add('cache');
+    $('#editeur').classList.remove('cache');
+    $('#deconnexion').classList.remove('cache');
+    $('#voirSite').classList.remove('cache');
+
+    if (res.stockage !== 'blob') {
+      msg($('#alerteStockage'),
+        "<strong>Stockage non configuré.</strong> Vous pouvez consulter les valeurs, mais l'enregistrement "
+        + "échouera tant qu'un Blob Store n'aura pas été créé sur Vercel.", 'info');
+    }
+    remplir();
+  }
+
+  function remplir() {
+    $('#avisNote').value = (donnees.avis || {}).note || '';
+    $('#avisNombre').value = (donnees.avis || {}).nombre || '';
+    $('#avisLien').value = (donnees.avis || {}).lien || '';
+    $('#avisVerif').checked = Boolean((donnees.avis || {}).aVerifier);
+    $('#prixDepart').value = donnees.prixDepart || '';
+    if (!Array.isArray(donnees.avis.temoignages)) donnees.avis.temoignages = [];
+    dessinerTemoignages();
+    dessinerVehicules();
+    dessinerLogements();
+  }
+
+  /* ---------------------------------------------------------- témoignages */
+  function dessinerTemoignages() {
+    $('#listeTemoignages').innerHTML = donnees.avis.temoignages.map(function (t, i) {
+      return '<div class="carte" data-t="' + i + '">'
+        +   '<div class="champs">'
+        +     '<div><label>Auteur</label><input type="text" data-c="auteur" value="' + esc(t.auteur) + '" placeholder="Prénom N."></div>'
+        +     '<div style="grid-column:2/4"><label>Extrait</label><input type="text" data-c="texte" value="' + esc(t.texte) + '" placeholder="Court extrait de l\'avis…"></div>'
+        +   '</div>'
+        +   '<div class="cases"><button class="btn btn--fin" type="button" data-suppr-t="' + i + '" style="margin-left:auto;font-size:.8rem">Supprimer</button></div>'
+        + '</div>';
+    }).join('');
+  }
+
+  $('#ajouterTemoignage').addEventListener('click', function () {
+    lireFormulaire();
+    donnees.avis.temoignages.push({ auteur: '', texte: '' });
+    dessinerTemoignages();
+  });
+
+  /* ---------------------------------------------------------- véhicules */
+  var CATS = [['citadine', 'Citadine'], ['suv', 'SUV'], ['familiale', 'Familiale'], ['auto', 'Boîte auto']];
+
+  function dessinerVehicules() {
+    $('#listeVehicules').innerHTML = donnees.vehicules.map(function (v, i) {
+      return '<div class="carte" data-i="' + i + '" data-masque="' + (v.visible === false ? 'oui' : 'non') + '">'
+        + '<div class="grille">'
+        +   '<div>'
+        +     '<img class="vignette" src="' + esc(v.photo) + '" alt="">'
+        +     '<button class="btn btn--fin" type="button" data-photo="' + i + '" style="margin-top:.5rem;width:110px;justify-content:center;font-size:.8rem">Photo…</button>'
+        +   '</div>'
+        +   '<div>'
+        +     '<div class="champs">'
+        +       '<div style="grid-column:1/-1"><label>Nom</label><input type="text" data-c="nom" value="' + esc(v.nom) + '"></div>'
+        +       '<div style="grid-column:1/-1"><label>Sous-titre</label><input type="text" data-c="sousTitre" value="' + esc(v.sousTitre) + '"></div>'
+        +       '<div><label>Prix / jour (€)</label><input type="text" data-c="prix" value="' + esc(v.prix) + '" placeholder="vide = sur demande"></div>'
+        +       '<div><label>Badge</label><input type="text" data-c="badge" value="' + esc(v.badge) + '" placeholder="ex. Le plus demandé"></div>'
+        +       '<div style="grid-column:1/-1"><label>Étiquettes (séparées par des virgules)</label><input type="text" data-c="chips" value="' + esc((v.chips || []).join(', ')) + '"></div>'
+        +     '</div>'
+        +     '<div class="cases">'
+        +       CATS.map(function (c) {
+                  return '<label><input type="checkbox" data-cat="' + c[0] + '"'
+                    + ((v.categories || []).indexOf(c[0]) >= 0 ? ' checked' : '') + '> ' + c[1] + '</label>';
+                }).join('')
+        +       '<label><input type="checkbox" data-c="vedette"' + (v.vedette ? ' checked' : '') + '> En vedette</label>'
+        +       '<label><input type="checkbox" data-c="visible"' + (v.visible !== false ? ' checked' : '') + '> Affiché</label>'
+        +       '<button class="btn btn--fin" type="button" data-suppr="' + i + '" style="margin-left:auto;font-size:.8rem">Supprimer</button>'
+        +     '</div>'
+        +   '</div>'
+        + '</div></div>';
+    }).join('');
+  }
+
+  $('#ajouterVehicule').addEventListener('click', function () {
+    lireFormulaire();
+    donnees.vehicules.push({
+      id: 'vehicule-' + Date.now(), nom: 'Nouveau véhicule', sousTitre: '', prix: '',
+      categories: ['citadine'], chips: ['Km illimité'], photo: 'assets/brand/logo.webp',
+      badge: '', vedette: false, visible: true
+    });
+    dessinerVehicules();
+  });
+
+  /* ---------------------------------------------------------- logements */
+  function dessinerLogements() {
+    $('#listeLogements').innerHTML = donnees.logements.map(function (l, i) {
+      return '<div class="carte" data-l="' + i + '" data-masque="' + (l.visible === false ? 'oui' : 'non') + '">'
+        + '<div class="grille">'
+        +   '<div>'
+        +     '<img class="vignette" src="' + esc(l.photo) + '" alt="">'
+        +     '<button class="btn btn--fin" type="button" data-photo-l="' + i + '" style="margin-top:.5rem;width:110px;justify-content:center;font-size:.8rem">Photo…</button>'
+        +   '</div>'
+        +   '<div>'
+        +     '<div class="champs">'
+        +       '<div><label>Nom</label><input type="text" data-c="nom" value="' + esc(l.nom) + '"></div>'
+        +       '<div><label>Type</label><input type="text" data-c="type" value="' + esc(l.type) + '"></div>'
+        +       '<div style="grid-column:1/-1"><label>Résumé (page d\'accueil)</label><input type="text" data-c="resume" value="' + esc(l.resume) + '"></div>'
+        +       '<div style="grid-column:1/-1"><label>Description</label><textarea data-c="paragraphes">' + esc((l.paragraphes || []).join('\n\n')) + '</textarea></div>'
+        +       '<div style="grid-column:1/-1"><label>Remarque (facultatif)</label><input type="text" data-c="note" value="' + esc(l.note) + '"></div>'
+        +       '<div style="grid-column:1/-1"><label>Équipements (séparés par des virgules)</label><input type="text" data-c="equipements" value="' + esc((l.equipements || []).join(', ')) + '"></div>'
+        +       '<div style="grid-column:1/-1"><label>Étiquettes page d\'accueil</label><input type="text" data-c="chipsAccueil" value="' + esc((l.chipsAccueil || []).join(', ')) + '"></div>'
+        +     '</div>'
+        +     '<div class="cases">'
+        +       '<label><input type="checkbox" data-c="visible"' + (l.visible !== false ? ' checked' : '') + '> Affiché</label>'
+        +       '<button class="btn btn--fin" type="button" data-suppr-l="' + i + '" style="margin-left:auto;font-size:.8rem">Supprimer</button>'
+        +     '</div>'
+        +   '</div>'
+        + '</div></div>';
+    }).join('');
+  }
+
+  $('#ajouterLogement').addEventListener('click', function () {
+    lireFormulaire();
+    donnees.logements.push({
+      id: 'logement-' + Date.now(), nom: 'Nouveau logement', type: 'Logement entier',
+      photo: 'assets/brand/logo.webp', resume: '', paragraphes: [], note: '',
+      equipements: [], chipsAccueil: [], visible: true
+    });
+    dessinerLogements();
+  });
+
+  /* ------------------------------------------------- lecture du formulaire */
+  function champs(carte) {
+    var o = {};
+    carte.querySelectorAll('[data-c]').forEach(function (el) {
+      o[el.dataset.c] = el.type === 'checkbox' ? el.checked : el.value;
+    });
+    return o;
+  }
+  var virgules = function (s) { return String(s || '').split(',').map(function (x) { return x.trim(); }).filter(Boolean); };
+
+  function lireFormulaire() {
+    donnees.avis = {
+      note: $('#avisNote').value, nombre: $('#avisNombre').value,
+      lien: $('#avisLien').value, aVerifier: $('#avisVerif').checked,
+      temoignages: donnees.avis.temoignages
+    };
+    document.querySelectorAll('#listeTemoignages .carte').forEach(function (carte) {
+      var t = donnees.avis.temoignages[+carte.dataset.t];
+      var c = champs(carte);
+      t.auteur = c.auteur; t.texte = c.texte;
+    });
+    donnees.prixDepart = $('#prixDepart').value;
+
+    document.querySelectorAll('#listeVehicules .carte').forEach(function (carte) {
+      var v = donnees.vehicules[+carte.dataset.i];
+      var c = champs(carte);
+      v.nom = c.nom; v.sousTitre = c.sousTitre; v.prix = c.prix; v.badge = c.badge;
+      v.chips = virgules(c.chips); v.vedette = c.vedette; v.visible = c.visible;
+      v.categories = [].slice.call(carte.querySelectorAll('[data-cat]'))
+        .filter(function (e) { return e.checked; }).map(function (e) { return e.dataset.cat; });
+    });
+
+    document.querySelectorAll('#listeLogements .carte').forEach(function (carte) {
+      var l = donnees.logements[+carte.dataset.l];
+      var c = champs(carte);
+      l.nom = c.nom; l.type = c.type; l.resume = c.resume; l.note = c.note; l.visible = c.visible;
+      l.paragraphes = String(c.paragraphes || '').split(/\n\s*\n/).map(function (x) { return x.trim(); }).filter(Boolean);
+      l.equipements = virgules(c.equipements);
+      l.chipsAccueil = virgules(c.chipsAccueil);
+    });
+  }
+
+  /* ---------------------------------------------------------- photos */
+  function choisirPhoto(appliquer) {
+    var input = document.createElement('input');
+    input.type = 'file'; input.accept = 'image/jpeg,image/png,image/webp';
+    input.onchange = async function () {
+      var f = input.files[0];
+      if (!f) return;
+      $('#etat').textContent = 'Envoi de la photo…';
+      try {
+        var petite = await reduire(f);
+        var r = await api('/api/upload', { method: 'POST', body: JSON.stringify(petite) });
+        appliquer(r.url);
+        $('#etat').textContent = 'Photo envoyée. Pensez à enregistrer.';
+      } catch (err) {
+        $('#etat').textContent = '';
+        msg($('#msgEnregistrement'), esc(err.message), 'err');
+      }
+    };
+    input.click();
+  }
+
+  /** Redimensionne dans le navigateur : l'envoi reste léger et les pages rapides. */
+  function reduire(fichier) {
+    return new Promise(function (resolve, reject) {
+      var img = new Image();
+      img.onload = function () {
+        var max = 1400;
+        var e = Math.min(1, max / Math.max(img.width, img.height));
+        var c = document.createElement('canvas');
+        c.width = Math.round(img.width * e); c.height = Math.round(img.height * e);
+        c.getContext('2d').drawImage(img, 0, 0, c.width, c.height);
+        var url = c.toDataURL('image/jpeg', 0.82);
+        resolve({ nom: fichier.name, type: 'image/jpeg', donnees: url.split(',')[1] });
+      };
+      img.onerror = function () { reject(new Error('Image illisible.')); };
+      img.src = URL.createObjectURL(fichier);
+    });
+  }
+
+  document.addEventListener('click', function (e) {
+    var b = e.target.closest('[data-photo],[data-photo-l],[data-suppr],[data-suppr-l],[data-suppr-t]');
+    if (!b) return;
+    if (b.dataset.suppr !== undefined) {
+      var i = +b.dataset.suppr;
+      if (!confirm('Supprimer « ' + donnees.vehicules[i].nom + ' » ?')) return;
+      lireFormulaire(); donnees.vehicules.splice(i, 1); dessinerVehicules(); return;
+    }
+    if (b.dataset.supprL !== undefined) {
+      var iL = +b.dataset.supprL;
+      if (!confirm('Supprimer « ' + donnees.logements[iL].nom + ' » ?')) return;
+      lireFormulaire(); donnees.logements.splice(iL, 1); dessinerLogements(); return;
+    }
+    if (b.dataset.supprT !== undefined) {
+      lireFormulaire();
+      donnees.avis.temoignages.splice(+b.dataset.supprT, 1);
+      dessinerTemoignages();
+      return;
+    }
+    var idx = b.dataset.photo !== undefined ? +b.dataset.photo : +b.dataset.photoL;
+    var liste = b.dataset.photo !== undefined ? donnees.vehicules : donnees.logements;
+    choisirPhoto(function (url) {
+      lireFormulaire();
+      liste[idx].photo = url;
+      b.dataset.photo !== undefined ? dessinerVehicules() : dessinerLogements();
+    });
+  });
+
+  /* ---------------------------------------------------------- enregistrement */
+  $('#enregistrer').addEventListener('click', async function () {
+    lireFormulaire();
+    $('#etat').textContent = 'Enregistrement…';
+    msg($('#msgEnregistrement'), '', 'info');
+    try {
+      await api('/api/data', { method: 'PUT', body: JSON.stringify(donnees) });
+      $('#etat').textContent = '';
+      msg($('#msgEnregistrement'),
+        'Enregistré. Le site se met à jour d\'ici quelques minutes — '
+        + '<a href="/" target="_blank" rel="noopener">voir la page d\'accueil</a>.', 'ok');
+    } catch (err) {
+      $('#etat').textContent = '';
+      msg($('#msgEnregistrement'), esc(err.message), 'err');
+    }
+  });
+
+  /* ---------------------------------------------------------- démarrage */
+  fetch('/api/login').then(function (r) { return r.json(); }).then(function (j) {
+    if (j.connecte) demarrer();
+  }).catch(function () {});
+})();
+</script>
+</body>
+</html>
