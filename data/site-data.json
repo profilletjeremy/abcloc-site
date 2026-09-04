@@ -339,20 +339,6 @@
         "Accès hôtel"
       ],
       "visible": true
-    },
-    {
-      "id": "test-e2e-final",
-      "nom": "Test E2E Final",
-      "type": "Studio test",
-      "photo": "assets/brand/logo.webp",
-      "resume": "Vérification finale",
-      "paragraphes": [
-        "Ajouté automatiquement pour vérifier le back-office."
-      ],
-      "note": "",
-      "equipements": [],
-      "chipsAccueil": [],
-      "visible": true
     }
   ]
 }
