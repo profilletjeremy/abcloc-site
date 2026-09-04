@@ -1,4 +1,5 @@
 {
+  "prixDepart": "18",
   "avis": {
     "note": "5,0",
     "nombre": "76",
@@ -31,7 +32,6 @@
       }
     ]
   },
-  "prixDepart": "18",
   "vehicules": [
     {
       "id": "fiat-panda",
@@ -48,6 +48,7 @@
       ],
       "photo": "assets/vehicules/fiat-panda.jpg",
       "badge": "",
+      "badgeLagon": false,
       "vedette": true,
       "visible": true
     },
@@ -66,6 +67,7 @@
       ],
       "photo": "assets/vehicules/dacia-sandero.webp",
       "badge": "",
+      "badgeLagon": false,
       "vedette": true,
       "visible": true
     },
@@ -84,6 +86,7 @@
       ],
       "photo": "assets/vehicules/peugeot-208.jpg",
       "badge": "",
+      "badgeLagon": false,
       "vedette": true,
       "visible": true
     },
@@ -102,6 +105,7 @@
       ],
       "photo": "assets/vehicules/dacia-duster.png",
       "badge": "Le plus demandé",
+      "badgeLagon": false,
       "vedette": true,
       "visible": true
     },
@@ -120,6 +124,7 @@
       ],
       "photo": "assets/vehicules/peugeot-2008.jpg",
       "badge": "",
+      "badgeLagon": false,
       "vedette": false,
       "visible": true
     },
@@ -158,6 +163,7 @@
       ],
       "photo": "assets/vehicules/dacia-jogger.webp",
       "badge": "",
+      "badgeLagon": false,
       "vedette": true,
       "visible": true
     },
@@ -176,6 +182,7 @@
       ],
       "photo": "assets/vehicules/dacia-lodgy.jpg",
       "badge": "",
+      "badgeLagon": false,
       "vedette": false,
       "visible": true
     },
@@ -194,6 +201,7 @@
       ],
       "photo": "assets/vehicules/partner-tepee.jpeg",
       "badge": "",
+      "badgeLagon": false,
       "vedette": false,
       "visible": true
     },
@@ -212,6 +220,7 @@
       ],
       "photo": "assets/vehicules/dacia-stepway.jpeg",
       "badge": "",
+      "badgeLagon": false,
       "vedette": false,
       "visible": true
     }
