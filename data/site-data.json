@@ -35,9 +35,9 @@
   "vehicules": [
     {
       "id": "fiat-panda",
-      "nom": "Fiat Panda",
+      "nom": "Fiat Panda 70ch",
       "sousTitre": "Citadine · la plus économique de la flotte",
-      "prix": "22",
+      "prix": "18",
       "categories": [
         "citadine"
       ],
@@ -47,25 +47,25 @@
         "Assurance incluse"
       ],
       "photo": "assets/vehicules/fiat-panda.jpg",
-      "badge": "",
+      "badge": "eco",
       "badgeLagon": false,
       "vedette": true,
       "visible": true
     },
     {
       "id": "dacia-sandero",
-      "nom": "Dacia Sandero",
-      "sousTitre": "Essence ou diesel · le meilleur rapport confort / budget",
-      "prix": "24",
+      "nom": "KIA picanto 85ch",
+      "sousTitre": "Essence ",
+      "prix": "20",
       "categories": [
         "citadine"
       ],
       "chips": [
-        "Essence ou diesel",
+        "Essence",
         "Km illimité",
         "Assurance incluse"
       ],
-      "photo": "assets/vehicules/dacia-sandero.webp",
+      "photo": "https://raw.githubusercontent.com/profilletjeremy/abcloc-site/main/assets/uploads/1788611947992-kia-picanto-panoramic-8.jpg",
       "badge": "",
       "badgeLagon": false,
       "vedette": true,
@@ -73,14 +73,13 @@
     },
     {
       "id": "peugeot-208",
-      "nom": "Peugeot 208",
-      "sousTitre": "Modèles 2023 / 2024 · 75 ou 100 ch",
-      "prix": "27",
+      "nom": "Peugeot 208 ou Citroen C3 ",
+      "sousTitre": "Citadine 75 ou 82ch",
+      "prix": "22",
       "categories": [
         "citadine"
       ],
       "chips": [
-        "75 ou 100 ch",
         "Km illimité",
         "Assurance incluse"
       ],
@@ -93,15 +92,15 @@
     {
       "id": "dacia-duster",
       "nom": "Dacia Duster",
-      "sousTitre": "SUV surélevé · modèle 2023 · idéal pour le Nord de l'île",
+      "sousTitre": "SUV surélevé · idéal en famille",
       "prix": "33",
       "categories": [
         "suv"
       ],
       "chips": [
         "SUV",
-        "Modèle 2023",
-        "Km illimité"
+        "Km illimité",
+        "assurances comprises"
       ],
       "photo": "assets/vehicules/dacia-duster.png",
       "badge": "Le plus demandé",
@@ -112,14 +111,15 @@
     {
       "id": "peugeot-2008",
       "nom": "Peugeot 2008",
-      "sousTitre": "SUV compact · modèle 2023",
+      "sousTitre": "SUV compact · 100ch",
       "prix": "35",
       "categories": [
         "suv"
       ],
       "chips": [
         "SUV",
-        "Modèle 2023",
+        "Carplay",
+        "camera de recul",
         "Km illimité"
       ],
       "photo": "assets/vehicules/peugeot-2008.jpg",
@@ -130,9 +130,9 @@
     },
     {
       "id": "sandero-stepway",
-      "nom": "Dacia Sandero Stepway",
-      "sousTitre": "Boîte automatique · modèle 2023",
-      "prix": "35",
+      "nom": "Dacia Sandero Stepway 90ch ",
+      "sousTitre": "Boîte automatique · modèle 2023, carplay , camera de recul",
+      "prix": "28",
       "categories": [
         "citadine",
         "auto"
@@ -150,7 +150,7 @@
     },
     {
       "id": "dacia-jogger",
-      "nom": "Dacia Jogger",
+      "nom": "Dacia Jogger 110ch",
       "sousTitre": "Grand format familial · modèle 2023",
       "prix": "42",
       "categories": [
@@ -162,63 +162,67 @@
         "Km illimité"
       ],
       "photo": "assets/vehicules/dacia-jogger.webp",
-      "badge": "",
+      "badge": "7 places",
       "badgeLagon": false,
       "vedette": true,
       "visible": true
     },
     {
       "id": "dacia-lodgy",
-      "nom": "Dacia Lodgy 7 places",
-      "sousTitre": "Diesel · pour les grandes tablées et les gros bagages",
-      "prix": "",
+      "nom": "Peugeot 2008 Hybride ",
+      "sousTitre": "Hybride , 145ch , boite auto ",
+      "prix": "45",
       "categories": [
-        "familiale"
+        "suv",
+        "familiale",
+        "auto"
       ],
       "chips": [
-        "7 places",
-        "Diesel",
-        "Km illimité"
+        "Carplay",
+        "km illimité",
+        "puissant"
       ],
-      "photo": "assets/vehicules/dacia-lodgy.jpg",
-      "badge": "",
+      "photo": "https://raw.githubusercontent.com/profilletjeremy/abcloc-site/main/assets/uploads/1788612137876-2008-hybride.jpg",
+      "badge": "haut de gamme",
       "badgeLagon": false,
       "vedette": false,
       "visible": true
     },
     {
       "id": "partner-tepee",
-      "nom": "Partner Tepee",
-      "sousTitre": "Diesel · volume de chargement généreux",
-      "prix": "",
+      "nom": "Citroen C3 + Hybride",
+      "sousTitre": "Hybride , boite auto ",
+      "prix": "30",
       "categories": [
-        "familiale"
+        "suv",
+        "auto"
       ],
       "chips": [
-        "Familiale",
-        "Diesel",
+        "SUV compact",
+        "surelevé",
         "Km illimité"
       ],
-      "photo": "https://raw.githubusercontent.com/profilletjeremy/abcloc-site/main/assets/uploads/1788605558245-2d652977-ea4e-4cb7-895a-8cb6bcfdca7a.jpg",
-      "badge": "",
+      "photo": "https://raw.githubusercontent.com/profilletjeremy/abcloc-site/main/assets/uploads/1788612192690-c3.jpg",
+      "badge": "la meilleure option",
       "badgeLagon": false,
       "vedette": false,
       "visible": true
     },
     {
       "id": "dacia-stepway",
-      "nom": "Dacia Stepway",
-      "sousTitre": "Disponible en boîte manuelle ou automatique",
-      "prix": "",
+      "nom": "KIA rio 100ch",
+      "sousTitre": "boite automatique",
+      "prix": "26",
       "categories": [
         "citadine",
         "auto"
       ],
       "chips": [
-        "Manuelle ou auto",
-        "Km illimité"
+        "Auto",
+        "Km illimité",
+        "assurances comprises"
       ],
-      "photo": "assets/vehicules/dacia-stepway.jpeg",
+      "photo": "https://raw.githubusercontent.com/profilletjeremy/abcloc-site/main/assets/uploads/1788612271494-kia-rio.jpg",
       "badge": "",
       "badgeLagon": false,
       "vedette": false,
