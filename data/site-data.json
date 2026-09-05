@@ -1,14 +1,14 @@
 {
   "prixDepart": "18",
   "pageVehicules": {
-    "eyebrow": "TEST-E2E",
-    "titre": "TEST-E2E-TITRE-VEHICULES",
-    "texte": "TEST-E2E-TEXTE"
+    "eyebrow": "Notre flotte",
+    "titre": "Dix véhicules, et rien à ajouter au tarif",
+    "texte": "L'assurance, le kilométrage illimité et le second conducteur sont <strong>déjà compris</strong> dans le prix. Aucun supplément à prévoir, aucune option à cocher, aucune mauvaise surprise au retour. Seule la saison et la durée font varier le montant de départ."
   },
   "pageLogements": {
-    "eyebrow": "TEST-E2E",
-    "titre": "TEST-E2E-TITRE-LOGEMENTS",
-    "texte": "TEST-E2E-TEXTE"
+    "eyebrow": "Les Trois-Îlets · Pointe du Bout",
+    "titre": "Quatre adresses face à la marina",
+    "texte": "Un appartement deux chambres et trois studios, tous aux Trois-Îlets, à quelques pas de la plage et des navettes pour Fort-de-France. Réservation par téléphone ou WhatsApp, directement avec Anaïs et Lionel."
   },
   "avis": {
     "note": "5,0",
@@ -245,7 +245,6 @@
       "nom": "T3 Pointe du Bout",
       "type": "Logement entier · Appartement",
       "photos": [
-        "assets/logements/t3-pointe-du-bout.jpeg",
         "assets/logements/t3-pointe-du-bout.jpeg"
       ],
       "resume": "Appartement entier · 2 chambres · vue marina",
