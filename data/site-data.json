@@ -245,7 +245,8 @@
       "nom": "T3 Pointe du Bout",
       "type": "Logement entier · Appartement",
       "photos": [
-        "assets/logements/t3-pointe-du-bout.jpeg"
+        "assets/logements/t3-pointe-du-bout.jpeg",
+        "https://raw.githubusercontent.com/profilletjeremy/abcloc-site/main/assets/uploads/1788618804313-test-verif.png"
       ],
       "resume": "Appartement entier · 2 chambres · vue marina",
       "paragraphes": [
