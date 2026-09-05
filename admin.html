@@ -31,6 +31,11 @@
   textarea{min-height:80px;resize:vertical;line-height:1.5}
   input:focus,textarea:focus,select:focus{outline:3px solid var(--sun);outline-offset:1px;border-color:transparent}
   .vignette{width:110px;aspect-ratio:1;object-fit:cover;border-radius:8px;border:1px solid var(--line);background:#f2ece1;display:block}
+  .miniatures{display:flex;flex-wrap:wrap;gap:.4rem}
+  .miniature{position:relative;width:70px;height:70px}
+  .miniature img{width:100%;height:100%;object-fit:cover;border-radius:8px;border:1px solid var(--line);background:#f2ece1;display:block}
+  .miniature button{position:absolute;top:-6px;right:-6px;width:20px;height:20px;border-radius:50%;border:1px solid var(--line);
+        background:#fff;color:var(--rouge);font-size:.85rem;line-height:1;cursor:pointer;display:flex;align-items:center;justify-content:center;padding:0}
   .btn{display:inline-flex;align-items:center;gap:.4rem;padding:.55rem 1rem;border:0;border-radius:999px;
        background:var(--sun);color:var(--ink);font:inherit;font-size:.9rem;font-weight:600;cursor:pointer}
   .btn:hover{background:#D9AC00}
@@ -107,6 +112,26 @@
     <div class="carte">
       <div class="champs" style="max-width:220px">
         <div><label for="prixDepart">Prix de départ (€)</label><input type="text" id="prixDepart" placeholder="18"></div>
+      </div>
+    </div>
+
+    <h2>Page « Véhicules »</h2>
+    <p class="aide">Le texte affiché en haut de la page qui liste tous les véhicules.</p>
+    <div class="carte">
+      <div class="champs">
+        <div><label for="pvEyebrow">Petit texte au-dessus du titre</label><input type="text" id="pvEyebrow"></div>
+        <div style="grid-column:1/-1"><label for="pvTitre">Titre</label><input type="text" id="pvTitre"></div>
+        <div style="grid-column:1/-1"><label for="pvTexte">Texte sous le titre (&lt;strong&gt; autorisé pour le gras)</label><textarea id="pvTexte"></textarea></div>
+      </div>
+    </div>
+
+    <h2>Page « Logements »</h2>
+    <p class="aide">Le texte affiché en haut de la page qui liste tous les logements.</p>
+    <div class="carte">
+      <div class="champs">
+        <div><label for="plEyebrow">Petit texte au-dessus du titre</label><input type="text" id="plEyebrow"></div>
+        <div style="grid-column:1/-1"><label for="plTitre">Titre</label><input type="text" id="plTitre"></div>
+        <div style="grid-column:1/-1"><label for="plTexte">Texte sous le titre (&lt;strong&gt; autorisé pour le gras)</label><textarea id="plTexte"></textarea></div>
       </div>
     </div>
 
@@ -191,6 +216,22 @@
     $('#avisVerif').checked = Boolean((donnees.avis || {}).aVerifier);
     $('#prixDepart').value = donnees.prixDepart || '';
     if (!Array.isArray(donnees.avis.temoignages)) donnees.avis.temoignages = [];
+
+    if (!donnees.pageVehicules) donnees.pageVehicules = {};
+    if (!donnees.pageLogements) donnees.pageLogements = {};
+    $('#pvEyebrow').value = donnees.pageVehicules.eyebrow || 'Notre flotte';
+    $('#pvTitre').value = donnees.pageVehicules.titre || 'Dix véhicules, et rien à ajouter au tarif';
+    $('#pvTexte').value = donnees.pageVehicules.texte
+      || "L'assurance, le kilométrage illimité et le second conducteur sont <strong>déjà compris</strong> dans le prix. Aucun supplément à prévoir, aucune option à cocher, aucune mauvaise surprise au retour. Seule la saison et la durée font varier le montant de départ.";
+    $('#plEyebrow').value = donnees.pageLogements.eyebrow || 'Les Trois-Îlets · Pointe du Bout';
+    $('#plTitre').value = donnees.pageLogements.titre || 'Quatre adresses face à la marina';
+    $('#plTexte').value = donnees.pageLogements.texte
+      || 'Un appartement deux chambres et trois studios, tous aux Trois-Îlets, à quelques pas de la plage et des navettes pour Fort-de-France. Réservation par téléphone ou WhatsApp, directement avec Anaïs et Lionel.';
+
+    donnees.logements.forEach(function (l) {
+      if (!Array.isArray(l.photos) || !l.photos.length) l.photos = l.photo ? [l.photo] : [];
+    });
+
     dessinerTemoignages();
     dessinerVehicules();
     dessinerLogements();
@@ -264,8 +305,15 @@
       return '<div class="carte" data-l="' + i + '" data-masque="' + (l.visible === false ? 'oui' : 'non') + '">'
         + '<div class="grille">'
         +   '<div>'
-        +     '<img class="vignette" src="' + esc(l.photo) + '" alt="">'
-        +     '<button class="btn btn--fin" type="button" data-photo-l="' + i + '" style="margin-top:.5rem;width:110px;justify-content:center;font-size:.8rem">Photo…</button>'
+        +     '<div class="miniatures">'
+        +       (l.photos || []).map(function (url, pi) {
+                  return '<div class="miniature">'
+                    +   '<img src="' + esc(url) + '" alt="">'
+                    +   '<button type="button" data-suppr-photo-l="' + i + '" data-idx="' + pi + '" title="Supprimer cette photo">×</button>'
+                    + '</div>';
+                }).join('')
+        +     '</div>'
+        +     '<button class="btn btn--fin" type="button" data-photo-l="' + i + '" style="margin-top:.5rem;width:140px;justify-content:center;font-size:.8rem">+ Ajouter une photo</button>'
         +   '</div>'
         +   '<div>'
         +     '<div class="champs">'
@@ -290,7 +338,7 @@
     lireFormulaire();
     donnees.logements.push({
       id: 'logement-' + Date.now(), nom: 'Nouveau logement', type: 'Logement entier',
-      photo: 'assets/brand/logo.webp', resume: '', paragraphes: [], note: '',
+      photos: ['assets/brand/logo.webp'], resume: '', paragraphes: [], note: '',
       equipements: [], chipsAccueil: [], visible: true
     });
     dessinerLogements();
@@ -318,6 +366,9 @@
       t.auteur = c.auteur; t.texte = c.texte;
     });
     donnees.prixDepart = $('#prixDepart').value;
+
+    donnees.pageVehicules = { eyebrow: $('#pvEyebrow').value, titre: $('#pvTitre').value, texte: $('#pvTexte').value };
+    donnees.pageLogements = { eyebrow: $('#plEyebrow').value, titre: $('#plTitre').value, texte: $('#plTexte').value };
 
     document.querySelectorAll('#listeVehicules .carte').forEach(function (carte) {
       var v = donnees.vehicules[+carte.dataset.i];
@@ -378,7 +429,7 @@
   }
 
   document.addEventListener('click', function (e) {
-    var b = e.target.closest('[data-photo],[data-photo-l],[data-suppr],[data-suppr-l],[data-suppr-t]');
+    var b = e.target.closest('[data-photo],[data-photo-l],[data-suppr],[data-suppr-l],[data-suppr-t],[data-suppr-photo-l]');
     if (!b) return;
     if (b.dataset.suppr !== undefined) {
       var i = +b.dataset.suppr;
@@ -396,12 +447,27 @@
       dessinerTemoignages();
       return;
     }
-    var idx = b.dataset.photo !== undefined ? +b.dataset.photo : +b.dataset.photoL;
-    var liste = b.dataset.photo !== undefined ? donnees.vehicules : donnees.logements;
+    if (b.dataset.supprPhotoL !== undefined) {
+      lireFormulaire();
+      var iSp = +b.dataset.supprPhotoL, pi = +b.dataset.idx;
+      donnees.logements[iSp].photos.splice(pi, 1);
+      dessinerLogements();
+      return;
+    }
+    if (b.dataset.photoL !== undefined) {
+      var iPl = +b.dataset.photoL;
+      choisirPhoto(function (url) {
+        lireFormulaire();
+        donnees.logements[iPl].photos.push(url);
+        dessinerLogements();
+      });
+      return;
+    }
+    var idxV = +b.dataset.photo;
     choisirPhoto(function (url) {
       lireFormulaire();
-      liste[idx].photo = url;
-      b.dataset.photo !== undefined ? dessinerVehicules() : dessinerLogements();
+      donnees.vehicules[idxV].photo = url;
+      dessinerVehicules();
     });
   });
 

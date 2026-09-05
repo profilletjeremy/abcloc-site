@@ -5,12 +5,32 @@ const CATS = ['citadine', 'suv', 'familiale', 'auto'];
 
 const texte = (v, max = 400) => String(v == null ? '' : v).slice(0, max);
 const liste = (v, max = 20) => (Array.isArray(v) ? v : []).slice(0, max).map((x) => texte(x, 80)).filter(Boolean);
+const photos = (v, max = 12) => (Array.isArray(v) ? v : []).slice(0, max).map((x) => texte(x, 500)).filter(Boolean);
+
+function entete(src, defaut) {
+  const s = src && typeof src === 'object' ? src : {};
+  return {
+    eyebrow: texte(s.eyebrow, 80) || defaut.eyebrow,
+    titre: texte(s.titre, 160) || defaut.titre,
+    texte: texte(s.texte, 600) || defaut.texte,
+  };
+}
 
 /** On ne fait jamais confiance au corps de la requête : on reconstruit l'objet champ par champ. */
 function nettoyer(entree) {
   const src = entree && typeof entree === 'object' ? entree : {};
   return {
     prixDepart: texte(src.prixDepart, 10),
+    pageVehicules: entete(src.pageVehicules, {
+      eyebrow: 'Notre flotte',
+      titre: 'Dix véhicules, et rien à ajouter au tarif',
+      texte: "L'assurance, le kilométrage illimité et le second conducteur sont <strong>déjà compris</strong> dans le prix. Aucun supplément à prévoir, aucune option à cocher, aucune mauvaise surprise au retour. Seule la saison et la durée font varier le montant de départ.",
+    }),
+    pageLogements: entete(src.pageLogements, {
+      eyebrow: 'Les Trois-Îlets · Pointe du Bout',
+      titre: 'Quatre adresses face à la marina',
+      texte: 'Un appartement deux chambres et trois studios, tous aux Trois-Îlets, à quelques pas de la plage et des navettes pour Fort-de-France. Réservation par téléphone ou WhatsApp, directement avec Anaïs et Lionel.',
+    }),
     avis: {
       note: texte((src.avis || {}).note, 10),
       nombre: texte((src.avis || {}).nombre, 10),
@@ -38,7 +58,7 @@ function nettoyer(entree) {
       id: texte(l.id, 60).replace(/[^a-z0-9-]/gi, '-').toLowerCase() || 'logement-' + i,
       nom: texte(l.nom, 80),
       type: texte(l.type, 80),
-      photo: texte(l.photo, 500),
+      photos: photos(l.photos && l.photos.length ? l.photos : (l.photo ? [l.photo] : [])),
       resume: texte(l.resume, 160),
       paragraphes: (Array.isArray(l.paragraphes) ? l.paragraphes : []).slice(0, 6).map((p) => texte(p, 1200)).filter(Boolean),
       note: texte(l.note, 400),

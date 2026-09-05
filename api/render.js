@@ -21,6 +21,29 @@ function riche(v) {
 
 const chips = (arr) => (arr || []).map((c) => `<span class="chip">${esc(c)}</span>`).join('');
 
+/* Un logement peut encore n'avoir que l'ancien champ "photo" (donnée pas
+   encore ré-enregistrée depuis le nouveau back-office) : on retombe dessus. */
+function photosLogement(l) {
+  if (Array.isArray(l.photos) && l.photos.length) return l.photos;
+  if (l.photo) return [l.photo];
+  return [];
+}
+
+function entete(page, defaut) {
+  const p = (page && typeof page === 'object') ? page : {};
+  return {
+    eyebrow: p.eyebrow || defaut.eyebrow,
+    titre: p.titre || defaut.titre,
+    texte: p.texte || defaut.texte,
+  };
+}
+
+function blocEntete(h) {
+  return `<p class="eyebrow">${esc(h.eyebrow)}</p>
+      <h1>${esc(h.titre)}</h1>
+      <p>${riche(h.texte)}</p>`;
+}
+
 function blocPrix(v, suffixe) {
   const p = String(v.prix || '').trim();
   if (!p) return `<p class="price price--ask"><b>Sur demande</b><span>${esc(suffixe)}</span></p>`;
@@ -48,9 +71,10 @@ function carteVehicule(v) {
 }
 
 function carteLogementAccueil(l) {
+  const photo = photosLogement(l)[0] || '';
   return `
         <article class="car reveal">
-          <div class="car__media" style="aspect-ratio:4/3"><img src="${urlPhoto(l.photo)}" alt="${esc(l.nom)}" loading="lazy" style="object-fit:cover;padding:0"></div>
+          <div class="car__media" style="aspect-ratio:4/3"><img src="${urlPhoto(photo)}" alt="${esc(l.nom)}" loading="lazy" style="object-fit:cover;padding:0"></div>
           <div class="car__body">
             <div><h3 class="car__name">${esc(l.nom)}</h3><p class="car__sub">${esc(l.resume)}</p></div>
             <div class="chips">${chips(l.chipsAccueil)}</div>
@@ -62,6 +86,16 @@ function carteLogementAccueil(l) {
         </article>`;
 }
 
+function galerieLogement(photos, nom) {
+  const [principale, ...reste] = photos;
+  const vignettes = reste.length
+    ? `<div class="stay__thumbs">${reste
+        .map((p) => `<img src="${urlPhoto(p)}" alt="${esc(nom)}" loading="lazy">`)
+        .join('')}</div>`
+    : '';
+  return `<div class="stay__gallery"><div class="stay__media"><img src="${urlPhoto(principale)}" alt="${esc(nom)}" loading="lazy"></div>${vignettes}</div>`;
+}
+
 function blocLogement(l) {
   const paras = (l.paragraphes || []).map((p) => `<p>${riche(p)}</p>`).join('\n          ');
   const note = l.note
@@ -69,7 +103,7 @@ function blocLogement(l) {
     : '';
   return `
       <article class="stay reveal" id="${esc(l.id)}">
-        <div class="stay__media"><img src="${urlPhoto(l.photo)}" alt="${esc(l.nom)}" loading="lazy"></div>
+        ${galerieLogement(photosLogement(l), l.nom)}
         <div>
           <p class="stay__kind">${esc(l.type)}</p>
           <h3>${esc(l.nom)}</h3>
@@ -154,11 +188,25 @@ module.exports = async (req, res) => {
         `$1${esc(d.prixDepart || '')} €$2`
       );
   } else if (page === 'vehicules') {
+    const entV = entete(d.pageVehicules, {
+      eyebrow: 'Notre flotte',
+      titre: 'Dix véhicules, et rien à ajouter au tarif',
+      texte: "L'assurance, le kilométrage illimité et le second conducteur sont <strong>déjà compris</strong> dans le prix. Aucun supplément à prévoir, aucune option à cocher, aucune mauvaise surprise au retour. Seule la saison et la durée font varier le montant de départ.",
+    });
     const vide = `
         <p class="cars__empty" hidden>Aucun véhicule ne correspond à ce filtre. <a href="${WA}" target="_blank" rel="noopener">Écrivez-nous</a>, nous trouverons une solution.</p>`;
-    html = html.replace('<!--CARS_ALL-->', vehicules.map(carteVehicule).join('\n') + vide);
+    html = html
+      .replace('<!--PAGEHEAD_VEHICULES-->', blocEntete(entV))
+      .replace('<!--CARS_ALL-->', vehicules.map(carteVehicule).join('\n') + vide);
   } else {
-    html = html.replace('<!--STAYS_ALL-->', logements.map(blocLogement).join('\n'));
+    const entL = entete(d.pageLogements, {
+      eyebrow: 'Les Trois-Îlets · Pointe du Bout',
+      titre: 'Quatre adresses face à la marina',
+      texte: 'Un appartement deux chambres et trois studios, tous aux Trois-Îlets, à quelques pas de la plage et des navettes pour Fort-de-France. Réservation par téléphone ou WhatsApp, directement avec Anaïs et Lionel.',
+    });
+    html = html
+      .replace('<!--PAGEHEAD_LOGEMENTS-->', blocEntete(entL))
+      .replace('<!--STAYS_ALL-->', logements.map(blocLogement).join('\n'));
   }
 
   res.setHeader('Content-Type', 'text/html; charset=utf-8');

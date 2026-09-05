@@ -34,6 +34,16 @@ module.exports = {
     ]
   },
   "prixDepart": "18",
+  "pageVehicules": {
+    "eyebrow": "Notre flotte",
+    "titre": "Dix véhicules, et rien à ajouter au tarif",
+    "texte": "L'assurance, le kilométrage illimité et le second conducteur sont <strong>déjà compris</strong> dans le prix. Aucun supplément à prévoir, aucune option à cocher, aucune mauvaise surprise au retour. Seule la saison et la durée font varier le montant de départ."
+  },
+  "pageLogements": {
+    "eyebrow": "Les Trois-Îlets · Pointe du Bout",
+    "titre": "Quatre adresses face à la marina",
+    "texte": "Un appartement deux chambres et trois studios, tous aux Trois-Îlets, à quelques pas de la plage et des navettes pour Fort-de-France. Réservation par téléphone ou WhatsApp, directement avec Anaïs et Lionel."
+  },
   "vehicules": [
     {
       "id": "fiat-panda",
@@ -223,7 +233,7 @@ module.exports = {
       "id": "t3-pointe-du-bout",
       "nom": "T3 Pointe du Bout",
       "type": "Logement entier · Appartement",
-      "photo": "assets/logements/t3-pointe-du-bout.jpeg",
+      "photos": ["assets/logements/t3-pointe-du-bout.jpeg"],
       "resume": "Appartement entier · 2 chambres · vue marina",
       "paragraphes": [
         "Situé au deuxième et dernier étage d'une petite copropriété, l'appartement se compose d'une pièce de vie lumineuse et climatisée, de <strong>deux chambres spacieuses</strong> et d'une petite terrasse au calme avec vue sur la marina. Idéalement placé, tout se fait à pied."
@@ -251,7 +261,7 @@ module.exports = {
       "id": "carayou-spa",
       "nom": "Carayou & Spa",
       "type": "Studio · Complexe hôtelier",
-      "photo": "assets/logements/carayou-spa.jpg",
+      "photos": ["assets/logements/carayou-spa.jpg"],
       "resume": "Studio rénové dans un complexe hôtelier",
       "paragraphes": [
         "Un studio récemment rénové, avec un couchage 160×200 et un 90×200, une commode avec espace petit-déjeuner, une télévision, un WC séparé, une salle d'eau avec grande douche et une kitchenette sur la terrasse avec espace repas.",
@@ -280,7 +290,7 @@ module.exports = {
       "id": "ti-paradis",
       "nom": "Ti Paradis",
       "type": "Résidence de tourisme 3★",
-      "photo": "assets/logements/ti-paradis.jpg",
+      "photos": ["assets/logements/ti-paradis.jpg"],
       "resume": "Résidence 3★ · terrasse vue Marina · 3 personnes",
       "paragraphes": [
         "Idéalement situé sur la plage des Trois-Îlets, dans un complexe hôtelier trois étoiles, l'appartement dispose d'une <strong>terrasse bien exposée avec vue sur la Marina</strong>, en rez-de-chaussée. Décor moderne, jusqu'à trois personnes.",
@@ -309,7 +319,7 @@ module.exports = {
       "id": "ti-carayou",
       "nom": "Ti Carayou",
       "type": "Studio · Résidence de tourisme",
-      "photo": "assets/logements/ti-carayou.jpg",
+      "photos": ["assets/logements/ti-carayou.jpg"],
       "resume": "Studio confortable · vue sur la marina",
       "paragraphes": [
         "Un studio confortable avec une bonne literie 160×200 cm, la climatisation et un brasseur d'air, et une <strong>vue incroyable sur la marina</strong>. Vacances paisibles garanties.",
